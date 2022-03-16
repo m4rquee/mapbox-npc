@@ -16,7 +16,7 @@ namespace Custom
         /// You can search for a place using the embedded "Search" button in the inspector.
         /// This value can be changed at runtime in the inspector.
         /// </summary>
-        public TextAsset locationLogFile;
+        [SerializeField] private TextAsset locationLogFile;
 
 
         private ExtraSensoryReader _logReader;
