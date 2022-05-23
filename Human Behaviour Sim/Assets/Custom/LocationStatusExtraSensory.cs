@@ -8,6 +8,8 @@ namespace Custom
     {
         [SerializeField] private Text statusText;
 
+        [SerializeField] private Slider batterySlider;
+
         [SerializeField] private Material baseMaterial;
 
         [SerializeField] private Material selectedMaterial;
@@ -62,13 +64,12 @@ namespace Custom
                     statusText.text = "location services not enabled";
                 else
                 {
-                    if (currLoc.LatitudeLongitude.Equals(Vector2d.zero))
-                        statusText.text = "Waiting for location ....";
-                    else
-                    {
-                        statusText.text = $"{currLoc.LatitudeLongitude} \n- LyingDown = {userState.LyingDown}";
-                        statusText.color = userState.LyingDown ? Color.green : Color.red;
-                    }
+                    statusText.text = currLoc.LatitudeLongitude == Vector2d.zero
+                        ? "Waiting for location ...."
+                        : $"> {currLoc.LatitudeLongitude}\n" +
+                          $"> DeviceMuted = {userState.DeviceMuted}\n" +
+                          $"> BuildCategory = {userState.BuildCategory}";
+                    batterySlider.value = userState.BatteryLevel;
                 }
             }
         }

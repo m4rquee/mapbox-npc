@@ -17,23 +17,93 @@ namespace Custom
         private new enum LogfileColumns
         {
 #if !ENABLE_WINMD_SUPPORT
+            [Description("location service enabled")]
+#endif
+            LocationServiceEnabled = 0,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("location service intializing")]
+#endif
+            LocationServiceInitializing = 1,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("location updated")]
+#endif
+            LocationUpdated = 2,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("userheading updated")]
+#endif
+            UserHeadingUpdated = 3,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("location provider")]
+#endif
+            LocationProvider = 4,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("location provider class")]
+#endif
+            LocationProviderClass = 5,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("time device [utc]")]
+#endif
+            UtcTimeDevice = 6,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("time location [utc]")]
+#endif
+            UtcTimeOfLocation = 7,
+#if !ENABLE_WINMD_SUPPORT
             [Description("latitude")]
 #endif
-            Latitude = 0,
+            Latitude = 8,
 #if !ENABLE_WINMD_SUPPORT
             [Description("longitude")]
 #endif
-            Longitude = 1,
+            Longitude = 9,
 #if !ENABLE_WINMD_SUPPORT
-            [Description("LYING_DOWN")]
+            [Description("accuracy [m]")]
 #endif
-            LyingDown = 2
+            Accuracy = 10,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("user heading [�]")]
+#endif
+            UserHeading = 11,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("device orientation [�]")]
+#endif
+            DeviceOrientation = 12,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("speed [km/h]")]
+#endif
+            Speed = 13,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("has gps fix")]
+#endif
+            HasGpsFix = 14,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("satellites used")]
+#endif
+            SatellitesUsed = 15,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("satellites in view")]
+#endif
+            SatellitesInView = 16,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("build category")]
+#endif
+            BuildCategory = 17,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("device muted")]
+#endif
+            DeviceMuted = 18,
+#if !ENABLE_WINMD_SUPPORT
+            [Description("battery level")]
+#endif
+            BatteryLevel = 19
         }
 
-        [DebuggerDisplay("LyingDown = {LyingDown}")]
+        [DebuggerDisplay("BuildCategory = {BuildCategory}; DeviceMuted = {DeviceMuted}; BatteryLevel = {BatteryLevel}")]
         public struct UserState
         {
-            public bool LyingDown;
+            public string BuildCategory;
+            public bool DeviceMuted;
+            public float BatteryLevel;
         }
 
         public ExtraSensoryReader(byte[] contents)
@@ -111,7 +181,7 @@ namespace Custom
 
                 var tokens = line.Split(Delimiter.ToCharArray());
                 // simple safety net: check if number of columns matches
-                if (tokens.Length != 3) Debug.Fail("unsupported log file");
+                if (tokens.Length != 20) Debug.Fail("unsupported log file");
 
                 var location = new Location
                 {
@@ -135,7 +205,9 @@ namespace Custom
 
                 var userState = new UserState
                 {
-                    LyingDown = bool.Parse(tokens[(int) LogfileColumns.LyingDown])
+                    BuildCategory = tokens[(int) LogfileColumns.BuildCategory],
+                    DeviceMuted = bool.Parse(tokens[(int) LogfileColumns.DeviceMuted]),
+                    BatteryLevel = float.Parse(tokens[(int) LogfileColumns.BatteryLevel])
                 };
 
                 yield return (location, userState);
